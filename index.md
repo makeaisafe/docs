@@ -4,14 +4,14 @@ layout: home
 
 hero:
   name: "Technical Solutions Repository for AI Risk Mitigation"
-  text: "Design, Methodology, and Initial Findings"
-  tagline: My great project tagline
+  tagline: "Design, Methodology, and Initial Findings"
+  <!-- tagline: My great project tagline -->
   actions:
     - theme: brand
-      text: Markdown Examples
+      text: Our Methodology
       link: /markdown-examples
     - theme: alt
-      text: API Examples
+      text: View Repository
       link: /api-examples
 
 features:

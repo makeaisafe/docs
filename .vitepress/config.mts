@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Technical Solutions Repository for AI Risk Mitigation",
+  title: "Make AI Safe",
   description: "Design, Methodology, and Initial Findings",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
