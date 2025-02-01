@@ -21,14 +21,33 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const issueNumber = context.payload.issue.number;
-            const issueData = await github.rest.issues.get({
+            // Debug logging
+            console.log('Event context:', {
               owner: context.repo.owner,
               repo: context.repo.name,
-              issue_number: issueNumber
+              issue_number: context.payload.issue.number
             });
-            console.log('Issue data:', issueData.data);
-            return issueData.data.body || '';
+            
+            try {
+              const { owner, repo } = context.repo;
+              const issue_number = context.payload.issue.number;
+              
+              // Ensure we're using the correct path format
+              console.log(`Fetching issue from: ${owner}/${repo}#${issue_number}`);
+              
+              const issueData = await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number
+              });
+              
+              console.log('Successfully fetched issue data');
+              return issueData.data.body || '';
+            } catch (error) {
+              console.error('Error fetching issue:', error);
+              core.setFailed(`Failed to fetch issue: ${error.message}`);
+              throw error;
+            }
           result-encoding: string
 
       - name: Update Collection File
