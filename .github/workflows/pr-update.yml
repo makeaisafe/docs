@@ -62,27 +62,27 @@ jobs:
 
           TEMP_FILE=$(mktemp)
 
-          # Ensure the category exists, otherwise append it at the end
+          # Ensure category exists, otherwise append it at the end
           if ! grep -q "## $CATEGORY" articles/about/collection.md; then
             echo -e "\n## $CATEGORY" >> articles/about/collection.md
           fi
 
-          # Insert under the correct category
-          awk -v category="## $CATEGORY" -v issue="- $ISSUE_BODY\n" '
+          # Insert issue content under the correct category
+          awk -v category="## $CATEGORY" -v issue="- "issue_body '
             BEGIN { found=0 }
             {
               print $0
               if ($0 == category) { found=1; next }
-              if (found && /^## /) { print issue; found=0 }
+              if (found && /^## /) { print issue issue_body; found=0 }
             }
-            END { if (found) print issue }  # If category is at the end, append the issue
+            END { if (found) print issue issue_body }  # Append if category is at the end
           ' articles/about/collection.md > "$TEMP_FILE"
 
           mv "$TEMP_FILE" articles/about/collection.md
 
-          # Debugging: Show file contents and git status
-          cat articles/about/collection.md
-          git status
+          # Ensure file changes are staged
+          git add articles/about/collection.md
+
           - name: Update Collection File
           run: |
             mkdir -p articles/about
@@ -95,27 +95,26 @@ jobs:
   
             TEMP_FILE=$(mktemp)
   
-            # Ensure the category exists, otherwise append it at the end
+            # Ensure category exists, otherwise append it at the end
             if ! grep -q "## $CATEGORY" articles/about/collection.md; then
               echo -e "\n## $CATEGORY" >> articles/about/collection.md
             fi
   
-            # Insert under the correct category
-            awk -v category="## $CATEGORY" -v issue="- $ISSUE_BODY\n" '
+            # Insert issue content under the correct category
+            awk -v category="## $CATEGORY" -v issue="- "issue_body '
               BEGIN { found=0 }
               {
                 print $0
                 if ($0 == category) { found=1; next }
-                if (found && /^## /) { print issue; found=0 }
+                if (found && /^## /) { print issue issue_body; found=0 }
               }
-              END { if (found) print issue }  # If category is at the end, append the issue
+              END { if (found) print issue issue_body }  # Append if category is at the end
             ' articles/about/collection.md > "$TEMP_FILE"
   
             mv "$TEMP_FILE" articles/about/collection.md
   
-            # Debugging: Show file contents and git status
-            cat articles/about/collection.md
-            git status
+            # Ensure file changes are staged
+            git add articles/about/collection.md
   
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
