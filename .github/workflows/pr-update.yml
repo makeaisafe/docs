@@ -68,20 +68,21 @@ jobs:
           fi
 
           # Insert issue content under the correct category
-          awk -v category="## $CATEGORY" -v issue="- ${ISSUE_BODY}" '
+          awk -v category="## $CATEGORY" -v issue="- ${ISSUE_BODY}\n" '
             BEGIN { found=0 }
             {
+              if ($0 == category) { print $0; found=1; next }
+              if (found && /^## /) { print issue; found=0 } 
               print $0
-              if ($0 == category) { found=1; next }
-              if (found && /^## /) { print issue; found=0 }
             }
-            END { if (found) print issue }
+            END { if (found) print issue } # If category is last, append the issue
           ' articles/about/collection.md > "$TEMP_FILE"
 
           mv "$TEMP_FILE" articles/about/collection.md
 
           # Ensure file changes are staged
           git add articles/about/collection.md
+  
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
