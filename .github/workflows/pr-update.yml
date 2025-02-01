@@ -4,35 +4,31 @@ on:
   issue_comment:
     types: [created]
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
 jobs:
   add-to-collection:
     if: ${{ github.event.comment.body == 'looks good to me' }}
     runs-on: ubuntu-latest
-    permissions:
-      issues: read
-      contents: write
-      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get Issue Content
         id: issue
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // Debug logging
-            console.log('Event context:', {
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              issue_number: context.payload.issue.number
-            });
-            
             try {
               const { owner, repo } = context.repo;
               const issue_number = context.payload.issue.number;
               
-              // Ensure we're using the correct path format
               console.log(`Fetching issue from: ${owner}/${repo}#${issue_number}`);
               
               const issueData = await github.rest.issues.get({
@@ -57,11 +53,9 @@ jobs:
           if [ ! -f articles/about/collection.md ]; then
             touch articles/about/collection.md
           fi
-          # Ensure there's a newline at the end of the file if it's not empty
           if [ -s articles/about/collection.md ] && [ $(tail -c1 articles/about/collection.md | wc -l) -eq 0 ]; then
             echo "" >> articles/about/collection.md
           fi
-          # Add the new content
           echo "- ${ISSUE_BODY}" >> articles/about/collection.md
         env:
           ISSUE_BODY: ${{ steps.issue.outputs.result }}
@@ -69,6 +63,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'docs: add issue #${{ github.event.issue.number }} to collection'
           title: 'Add Issue #${{ github.event.issue.number }} to Collection'
           body: |
