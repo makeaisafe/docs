@@ -7,3 +7,6 @@
 Main Source: https://arxiv.org/pdf/1809.03260
 
 ## Privacy and Security
+- FACET is a benchmark for evaluating fairness and performance disparities in computer vision models across demographic attributes.
+
+Main Source: https://arxiv.org/pdf/2309.00035
