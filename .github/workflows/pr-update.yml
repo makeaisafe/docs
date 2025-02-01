@@ -21,18 +21,28 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const issue = await github.rest.issues.get({
+            const issueNumber = context.payload.issue.number;
+            const issueData = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.name,
-              issue_number: context.issue.number
+              issue_number: issueNumber
             });
-            return issue.data.body;
+            console.log('Issue data:', issueData.data);
+            return issueData.data.body || '';
           result-encoding: string
 
       - name: Update Collection File
         id: update-file
         run: |
           mkdir -p articles/about
+          if [ ! -f articles/about/collection.md ]; then
+            touch articles/about/collection.md
+          fi
+          # Ensure there's a newline at the end of the file if it's not empty
+          if [ -s articles/about/collection.md ] && [ $(tail -c1 articles/about/collection.md | wc -l) -eq 0 ]; then
+            echo "" >> articles/about/collection.md
+          fi
+          # Add the new content
           echo "- ${ISSUE_BODY}" >> articles/about/collection.md
         env:
           ISSUE_BODY: ${{ steps.issue.outputs.result }}
