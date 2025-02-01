@@ -1,0 +1,75 @@
+name: Add Issue to Collection
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  add-to-collection:
+    if: ${{ github.event.comment.body == 'looks good to me' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN_30 }}
+
+      - name: Get Issue Content
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN_30 }}
+          script: |
+            try {
+              const { owner, repo } = context.repo;
+              const issue_number = context.payload.issue.number;
+              
+              console.log(`Fetching issue from: ${owner}/${repo}#${issue_number}`);
+              
+              const issueData = await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number
+              });
+              
+              console.log('Successfully fetched issue data');
+              return issueData.data.body || '';
+            } catch (error) {
+              console.error('Error fetching issue:', error);
+              core.setFailed(`Failed to fetch issue: ${error.message}`);
+              throw error;
+            }
+          result-encoding: string
+
+      - name: Update Collection File
+        id: update-file
+        run: |
+          mkdir -p articles/about
+          if [ ! -f articles/about/collection.md ]; then
+            touch articles/about/collection.md
+          fi
+          if [ -s articles/about/collection.md ] && [ $(tail -c1 articles/about/collection.md | wc -l) -eq 0 ]; then
+            echo "" >> articles/about/collection.md
+          fi
+          echo "- ${ISSUE_BODY}" >> articles/about/collection.md
+        env:
+          ISSUE_BODY: ${{ steps.issue.outputs.result }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_TOKEN_30 }}
+          commit-message: 'docs: add issue #${{ github.event.issue.number }} to collection'
+          title: 'Add Issue #${{ github.event.issue.number }} to Collection'
+          body: |
+            This PR adds the content from issue #${{ github.event.issue.number }} to the collection.
+            
+            Original issue: ${{ github.event.issue.html_url }}
+          branch: add-issue-${{ github.event.issue.number }}
+          base: main
+          delete-branch: true
