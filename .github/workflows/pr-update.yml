@@ -68,7 +68,7 @@ jobs:
           fi
 
           # Insert issue content under the correct category
-          awk -v category="## $CATEGORY" -v issue="- "issue_body '
+          awk -v category="## $CATEGORY" -v issue="- ${ISSUE_BODY}" '
             BEGIN { found=0 }
             {
               print $0
@@ -101,7 +101,7 @@ jobs:
             fi
   
             # Insert issue content under the correct category
-            awk -v category="## $CATEGORY" -v issue="- "issue_body '
+            awk -v category="## $CATEGORY" -v issue="- ${ISSUE_BODY}" '
               BEGIN { found=0 }
               {
                 print $0
