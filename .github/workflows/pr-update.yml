@@ -15,7 +15,7 @@ jobs:
 
     - name: Fetch Issue Details
       id: issue
-      uses: octokit/request-action@v2
+      uses: octokit/request-action
       with:
         route: GET /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
         token: ${{ secrets.GITHUB_TOKEN }}
