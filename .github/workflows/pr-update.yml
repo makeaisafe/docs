@@ -1,4 +1,4 @@
-name: Auto Update Collection and Pull Request
+name: Auto Update Markdown and Pull Request
 
 on:
   issue_comment:
@@ -15,7 +15,7 @@ jobs:
 
     - name: Fetch Issue Details
       id: issue
-      uses: octokit/request-action
+      uses: octokit/request-action@v2.x
       with:
         route: GET /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -24,8 +24,8 @@ jobs:
       run: |
         ISSUE_TITLE=$(echo "${{ steps.issue.outputs.data }}" | jq -r '.title')
         ISSUE_BODY=$(echo "${{ steps.issue.outputs.data }}" | jq -r '.body')
-        echo "## Issue: $ISSUE_TITLE" >> articles/about/collection.md
-        echo "$ISSUE_BODY" >> articles/about/collection.md
+        echo "## Issue: $ISSUE_TITLE" >> about/articles/collection.md
+        echo "$ISSUE_BODY" >> about/articles/collection.md
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add path/to/your/file.md
@@ -37,4 +37,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: 'Automated update to markdown file with issue details'
         branch: 'auto-update-md-branch'
-        title: 'Automated Update to Collection File'
+        title: 'Automated Update to Markdown File'
+        body: 'This pull request was automatically created based on the comment: "looks good to me".'
