@@ -11,3 +11,9 @@ Main Source: https://arxiv.org/pdf/1809.03260
 Main Source: https://arxiv.org/pdf/2309.00035
 
 ## Privacy and Security
+
+## Privacy & Security
+- This paper proposes a new benchmark called CONFAIDE to evaluate the privacy reasoning capabilities of large language models (LLMs) in interactive settings. CONFAIDE is grounded in the theory of contextual integrity, which defines privacy as the appropriate flow of information within specific social contexts
+
+Main Source: https://arxiv.org/pdf/2310.17884
+
