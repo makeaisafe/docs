@@ -31,15 +31,15 @@ export default defineConfig({
         text: 'Discrimination & Toxicity',
         items: [
           { text: 'Unfair discrimination and misrepresentation', link: '/articles/discrimination-and-toxicity/unfair-discrimination-and-misrepresentation' },
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          {
-            text: 'API Examples',
-            collapsed: true, // This makes the section collapsible
-            items: [
-              { text: 'Runtime API', link: '/api-examples/runtime' },
-              { text: 'Build API', link: '/api-examples/build' },
-            ]
-          }
+          { text: 'Exposure to toxic content', link: '/articles/discrimination-and-toxicity/exposure-to-toxic-content' },
+          // {
+          //   text: 'API Examples',
+          //   collapsed: true, // This makes the section collapsible
+          //   items: [
+          //     { text: 'Runtime API', link: '/api-examples/runtime' },
+          //     { text: 'Build API', link: '/api-examples/build' },
+          //   ]
+          // }
         ]
       }
     ],
